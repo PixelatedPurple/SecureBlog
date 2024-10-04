@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Blog</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        .post { margin-bottom: 20px; padding: 20px; background: #fff; border: 1px solid #ddd; }
+        .post-title { font-size: 24px; margin-bottom: 10px; }
+        .post-content { font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>My Secure Blog</h1>
+    <div id="posts"></div>
+
+    <!-- Form for authorized client to create new post -->
+    <h2>Create New Post (Authorized Clients Only)</h2>
+    <form id="postForm">
+        <input type="text" id="title" placeholder="Post Title" required><br><br>
+        <textarea id="content" placeholder="Post Content" required></textarea><br><br>
+        <input type="password" id="apiKey" placeholder="API Key" required><br><br>
+        <button type="submit">Submit Post</button>
+    </form>
+
+    <script>
+        // Fetch and display all posts
+        async function fetchPosts() {
+            const response = await fetch('/api/posts');
+            const posts = await response.json();
+            const postsContainer = document.getElementById('posts');
+            postsContainer.innerHTML = '';
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <div class="post-title">${post.title}</div>
+                    <div class="post-content">${post.content}</div>
+                    <small>${new Date(post.date).toLocaleString()}</small>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Handle form submission to create a new post
+        document.getElementById('postForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const apiKey = document.getElementById('apiKey').value;
+
+            const response = await fetch('/api/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, content, apiKey })
+            });
+
+            if (response.ok) {
+                alert('Post created successfully!');
+                fetchPosts(); // Refresh posts after successful submission
+            } else {
+                alert('Failed to create post');
+            }
+        });
+
+        // Fetch posts on page load
+        fetchPosts();
+    </script>
+</body>
+</html>
