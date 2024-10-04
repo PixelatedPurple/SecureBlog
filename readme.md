@@ -41,4 +41,7 @@ By default, the application will run on port `3000`. You can access the blog at 
 - **POST /api/posts**: Creates a new blog post (requires `title`, `content`, and a valid `API_KEY`).
 
 ## License
-This project is licensed under the ISC License.
+This project is licensed under the MIT License.
+
+## Note
+Dont be that guy, give me the credit i deserve if you use my work thx.
